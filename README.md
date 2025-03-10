@@ -5,4 +5,8 @@ Here we present a the code used to build a comprehensive atlas of allele-speciÔ¨
 This project is developed by Jonathan Rosenski in [Prof. Tommy Kaplan's lab](https://www.cs.huji.ac.il/~tommy/) at the Hebrew University, Jerusalem, Israel.
 
 
-For the genome browser session of an methylation imprinting atlas see [here](https://genome-euro.ucsc.edu/s/tomkap/hg19_Imp).
+For a UCSC genome browser session of our human imprinting atlas, please see [here](https://genome-euro.ucsc.edu/s/tomkap/hg19_Imp).
+
+
+## Citation
+[Rosenski, Peretz, Magenheim, Loyfer, et al. (2025)](https://www.nature.com/articles/s41467-025-57433-1). Atlas of imprinted and allele-speciÔ¨Åc DNA methylation in the human body.
