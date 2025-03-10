@@ -7,6 +7,7 @@ Here we present a the code used to build a comprehensive atlas of allele-speciï¬
   
 This project is developed by Jonathan Rosenski in [Prof. Tommy Kaplan's lab](https://www.cs.huji.ac.il/~tommy/) at the Hebrew University, Jerusalem, Israel.
 
+WGBS data was pre-processed with [wgbs_tools](https://github.com/nloyfer/wgbs_tools).
 
 For a UCSC genome browser session of our human imprinting atlas, please see [here](https://genome-euro.ucsc.edu/s/tomkap/hg19_Imp).
 
