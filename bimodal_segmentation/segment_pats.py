@@ -163,8 +163,13 @@ def break_to_chunks_by_chrome_bimodal(args, in_files, num_threads, step_size, tm
     for chrom in chrom_list:
         tabix_head_cmd = "tabix {} {} | head -1".format(cpg_file_path, chrom)
         tabix_tail_cmd = "tabix {} {} | tail -1".format(cpg_file_path, chrom)
-        head_str = subprocess.check_output(tabix_head_cmd, shell=True).decode().split()
-        tail_str = subprocess.check_output(tabix_tail_cmd, shell=True).decode().split()
+        try:
+            head_str = subprocess.check_output(tabix_head_cmd, shell=True).decode().split()
+            tail_str = subprocess.check_output(tabix_tail_cmd, shell=True).decode().split()
+        except subprocess.CalledProcessError as e:
+            print(e.stderr)
+            raise Exception(f"Failed on command {tabix_head_cmd}")
+
         start_ind = int(head_str[-1])
         end_ind = int(tail_str[-1])
         skip_list, nsites_list = break_to_chunks(start_ind, end_ind, step_size)
