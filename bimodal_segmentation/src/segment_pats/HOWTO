@@ -1,0 +1,1 @@
+g++ -std=c++11 pat_segmentor.cpp -o pat_segmentor
