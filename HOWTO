@@ -1,2 +1,4 @@
+# link wgbs_tools reference dir to bimodal_segmentation
+# ln -s [wgbs_tools/references] bimodal_segmentation/
 cd /cs/cbio/jon/imprint_atlas/bimodal_segmentation/src/segment_pats
 g++ -std=c++11 pat_segmentor.cpp -o pat_segmentor
