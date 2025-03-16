@@ -13,7 +13,7 @@ import pandas as pd
 current_file_path = Path(op.realpath(__file__))
 DIR = str(current_file_path.parent)
 
-SRC_DIR = "/cs/cbio/jon/projects/PyCharmProjects/wgbs_tools/src/"
+SRC_DIR = str(current_file_path)
 pat_sampler = SRC_DIR + 'pat_sampler/pat_sampler'
 pat2beta_tool = SRC_DIR + 'pat2beta/stdin2beta'
 mask_pat_tool = SRC_DIR + 'pat2beta/mask_pat'
@@ -28,7 +28,7 @@ add_loci_tool = SRC_DIR + 'cpg2bed/add_loci'
 plot_marker_heatmap_script = SRC_DIR + 'R/plot_marker_heatmap.R'
 plot_tree_script = SRC_DIR + 'R/plot_circle.R'
 
-match_maker_tool = SRC_DIR + 'pipeline_wgbs/match_maker'
+match_maker_tool = os.path.join(SRC_DIR, 'match_maker')
 patter_tool = SRC_DIR + 'pipeline_wgbs/patter'
 add_cpg_count_tool = SRC_DIR + 'pipeline_wgbs/add_cpg_counts'
 allele_split_tool = SRC_DIR + 'pipeline_wgbs/snp_patter'

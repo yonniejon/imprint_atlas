@@ -19,7 +19,7 @@ FILE_SUF = 'allele.homog'
 # 10 means include only reads w.p. >= 0.9 to be mapped correctly.
 # And missing values (255)
 
-homog_by_allele_tool = '/cs/cbio/jon/projects/SnpCount/SnpMethHist.o'
+homog_by_allele_tool = 'SnpMethHist.o'
 
 
 def proc_chr(input_path, out_path_name, region, genome, paired_end, ex_flags, mapq, min_cpg,
