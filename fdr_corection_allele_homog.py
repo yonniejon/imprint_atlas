@@ -1,3 +1,4 @@
+import optparse
 import os
 from multiprocessing import Pool
 import pandas as pd
@@ -20,8 +21,16 @@ def iterate_over_files_with_pandas(file_name, base_name):
 
 
 if __name__ == '__main__':
-    input_dir = "/cs/zbio/jrosensk/atlas_blocks_hg19/homog/homog_aligned/all_snps"
-    num_threads = 16
+    parser = optparse.OptionParser()
+    parser.add_option('--indir',
+                      default="/cs/zbio/jrosensk/atlas_blocks_hg19/homog/homog_aligned/all_snps")
+    parser.add_option('--outdir',
+                      default="/cs/zbio/jrosensk/atlas_blocks_hg19/homog/homog_aligned/all_snps/")
+    parser.add_option('--num_threads',
+                      default=1)
+    options, arguments = parser.parse_args()
+    input_dir = options.indir
+    num_threads = int(options.num_threads)
     is_first = True
     file_list = []
     for filename in os.listdir(input_dir):
@@ -110,7 +119,7 @@ if __name__ == '__main__':
             res_list.append([snp, ",".join([format_float(p) for p in p_val_list]), ",".join([format_float(p) for p in original_p_val_list]), ",".join(sample_name_list), str(bimodal_count)])
     # snps_with_at_least2_and_at_least_1_dif_u = [snp for snp in snps_with_at_least2 if (
     #             0 < sum([info_list[0] for info_list in snp_dict[snp]]) < len(snp_dict[snp]))]
-    with open("/cs/zbio/jrosensk/atlas_blocks_hg19/homog/homog_aligned/all_snps/all_snps_imp_asm_res_table_all.01_fdr.tsv", 'w') as f_out:
+    with open(os.path.join(options.outdir, "all_snps_imp_asm_res_table_all.01_fdr.tsv"), 'w') as f_out:
         header = "\t".join(['chrom', 'start', 'end', 'corrected_p-vals', 'p-vals', 'tissue_names', 'bimodal_count'])
         f_out.write(f"{header}\n")
         for res_info in res_list:
@@ -119,7 +128,7 @@ if __name__ == '__main__':
             final_res_list = "\t".join(snp_bed_info + res_info[1:])
             f_out.write(f"{final_res_list}\n")
     with open(
-            "/cs/zbio/jrosensk/atlas_blocks_hg19/homog/homog_aligned/all_snps/all_asm.01_fdr.tsv",
+            os.path.join(options.outdir, "all_asm.01_fdr.tsv"),
             'w') as f_out:
         header = "\t".join(['chrom', 'start', 'end', 'corrected_p-vals', 'p-vals', 'tissue_names', 'bimodal_count'])
         f_out.write(f"{header}\n")

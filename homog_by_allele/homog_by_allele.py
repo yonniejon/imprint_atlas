@@ -47,7 +47,7 @@ def proc_chr(input_path, out_path_name, region, genome, paired_end, ex_flags, ma
     if paired_end:
         # change reads order, s.t paired reads will appear in adjacent lines
         cmd += f'{match_maker_tool} | '
-    cmd += f'{homog_by_allele_tool} {genome.dict_path} {snps_file} /cs/cbio/jon/projects/SnpCount/blacklist.bed.gz'
+    cmd += f'{homog_by_allele_tool} {genome.dict_path} {snps_file} blacklist.bed.gz'
     if min_cpg is not None:
         cmd += f' --min_cpg {str(min_cpg)}'
     if rate_cmd:
