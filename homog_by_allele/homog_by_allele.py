@@ -19,11 +19,11 @@ FILE_SUF = 'allele.homog'
 # 10 means include only reads w.p. >= 0.9 to be mapped correctly.
 # And missing values (255)
 
-homog_by_allele_tool = 'SnpMethHist.o'
+homog_by_allele_tool = 'SnpMethHist'
 
 
 def proc_chr(input_path, out_path_name, region, genome, paired_end, ex_flags, mapq, min_cpg,
-             snps_file, regions_file, in_flags, rate_cmd):
+             snps_file, regions_file, in_flags, rate_cmd, max_clip):
     """ Convert a temp single chromosome file, extracted from a bam file,
         into a sam formatted (no header) output file."""
 
@@ -47,11 +47,13 @@ def proc_chr(input_path, out_path_name, region, genome, paired_end, ex_flags, ma
     if paired_end:
         # change reads order, s.t paired reads will appear in adjacent lines
         cmd += f'{match_maker_tool} | '
-    cmd += f'{homog_by_allele_tool} {genome.dict_path} {snps_file} blacklist.bed.gz'
+    cmd += f'{homog_by_allele_tool} {genome.dict_path} {genome.genome_path} {snps_file} blacklist.bed.gz'
     if min_cpg is not None:
         cmd += f' --min_cpg {str(min_cpg)}'
     if rate_cmd:
         cmd += rate_cmd
+
+    cmd += f' --smart_clip {max_clip} '
 
     cmd += f'> {out_path}'
 
@@ -77,29 +79,6 @@ class HomogByAllele:
         # validate output dir:
         if not (op.isdir(self.out_dir)):
             raise IllegalArgumentError('Invalid output dir: {}'.format(self.out_dir))
-
-    # def set_regions(self):
-        # if self.gr.region_str:
-            # return [self.gr.region_str]
-        # else:
-            # cmd = 'samtools idxstats {} | cut -f1 '.format(self.bam_path)
-            # p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            # output, error = p.communicate()
-            # if p.returncode or not output:
-                # print(cmd)
-                # print("Failed with samtools idxstats %d\n%s\n%s" % (p.returncode, output.decode(), error.decode()))
-                # print('falied to find chromosomes')
-                # return []
-            # nofilt_chroms = output.decode()[:-1].split('\n')
-            # filt_chroms = [c for c in nofilt_chroms if 'chr' in c]
-            # if not filt_chroms:
-                # filt_chroms = [c for c in nofilt_chroms if c in CHROMS]
-            # else:
-                # filt_chroms = [c for c in filt_chroms if re.match(r'^chr([\d]+|[XYM])$', c)]
-            # if not filt_chroms:
-                # eprint('Failed retrieving valid chromosome names')
-                # raise IllegalArgumentError('Failed')
-            # return filt_chroms
 
     def set_regions(self):
         # if user specified a region, just use it
@@ -156,7 +135,7 @@ class HomogByAllele:
                 out_path_name = name + '_' + c
                 params.append((self.bam_path, out_path_name, c, self.gr.genome,
                         is_pair_end(self.bam_path, self.gr.genome), self.args.exclude_flags,
-                        self.args.mapq, self.args.min_cpg, self.args.snps_file, self.args.regions_file, self.args.include_flags, rate_cmd))
+                        self.args.mapq, self.args.min_cpg, self.args.snps_file, self.args.regions_file, self.args.include_flags, rate_cmd, self.args.smart_clip))
             p = Pool(self.args.threads)
             res = p.starmap(proc_chr, params)
             p.close()
@@ -167,7 +146,7 @@ class HomogByAllele:
             out_path_name = name + '_' + "1"
             res = [proc_chr(self.bam_path, out_path_name, self.gr.region_str, self.gr.genome,
                             is_pair_end(self.bam_path), self.args.exclude_flags, self.args.mapq,
-                            self.args.min_cpg, self.args.snps_file, self.args.regions_file, self.args.include_flags, rate_cmd)]
+                            self.args.min_cpg, self.args.snps_file, self.args.regions_file, self.args.include_flags, rate_cmd, self.args.smart_clip)]
         print('Completed all chromosomes')
         if None in res:
             print('threads failed')
@@ -196,6 +175,8 @@ def add_cpg_args(parser):
                              'example is:\nchr11\t2021164\tG\tT.')
     parser.add_argument('--regions_file', default=None,
                         help='region file to filter bam.')
+    parser.add_argument('--smart_clip', default=20,
+                        help='max clip size of reads.')
     parser.add_argument('--thresholds', '-t',
                         help='UXM thresholds, LOW,HIGH. E.g, "0.3334,0.666".\n')
     return parser
